@@ -38,3 +38,6 @@ Prerequisites:
 * [docker](https://www.docker.com/products/docker-desktop)
 
 ## Additional Resources
+* [Messaging with RabbitMQ](https://spring.io/guides/gs/messaging-rabbitmq/)
+* [Spring-AMQP](http://projects.spring.io/spring-amqp/)
+* [Building an Application with Spring Boot](https://spring.io/guides/gs/spring-boot/)
