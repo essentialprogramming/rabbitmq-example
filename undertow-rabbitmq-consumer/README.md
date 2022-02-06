@@ -1,2 +1,2 @@
-Spring AMQP (RabbitMQ) sample project  
-=====================================
+Undertow RabbitMQ Consumer
+==========================
