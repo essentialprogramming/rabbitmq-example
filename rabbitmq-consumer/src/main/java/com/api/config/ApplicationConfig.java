@@ -1,7 +1,6 @@
 package com.api.config;
 
 
-import com.api.controller.*;
 import com.exception.BeanValidationExceptionHandler;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.util.enums.Language;
@@ -10,15 +9,12 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
-import java.util.Collections;
 
 /**
  * JAX-RS application configuration class.
@@ -41,8 +37,6 @@ public class ApplicationConfig extends ResourceConfig {
         //Needed for upload
         register(MultiPartFeature.class);
 
-        register(UserController.class);
-
         register(new AbstractBinder(){
             @Override
             protected void configure() {
@@ -55,9 +49,9 @@ public class ApplicationConfig extends ResourceConfig {
         OpenAPI openAPI = new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title("Essential Programming API")
+                        .title("RabbitMQ Consumer")
                         .description(
-                                "Essential Programming endpoints using OpenAPI 3.0")
+                                "RabbitMQ Consumer endpoints using OpenAPI 3.0")
                         .version("v1")
                 );
 
