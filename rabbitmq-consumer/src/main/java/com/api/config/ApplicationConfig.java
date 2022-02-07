@@ -3,7 +3,6 @@ package com.api.config;
 
 import com.exception.BeanValidationExceptionHandler;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.util.enums.Language;
 import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.Components;
@@ -36,15 +35,6 @@ public class ApplicationConfig extends ResourceConfig {
 
         //Needed for upload
         register(MultiPartFeature.class);
-
-        register(new AbstractBinder(){
-            @Override
-            protected void configure() {
-                bindFactory(LanguageContextProvider.class)
-                        .to(Language.class)
-                        .in(RequestScoped.class);
-            }
-        });
 
         OpenAPI openAPI = new OpenAPI()
                 .components(new Components())

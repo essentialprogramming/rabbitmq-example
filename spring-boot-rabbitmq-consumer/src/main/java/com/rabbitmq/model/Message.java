@@ -7,6 +7,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Msg {
-    private String id;
+public class Message {
+    private String message;
 }

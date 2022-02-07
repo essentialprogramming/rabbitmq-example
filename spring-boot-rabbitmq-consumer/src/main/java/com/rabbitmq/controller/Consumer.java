@@ -1,6 +1,6 @@
 package com.rabbitmq.controller;
 
-import com.rabbitmq.model.Msg;
+import com.rabbitmq.model.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class Consumer {
 
     @RabbitListener(queues = "queue")
-    private void receive(Msg msg){
-        System.out.println(msg.getId());
+    private void receive(Message msg){
+        System.out.println(msg.getMessage());
     }
 }
 

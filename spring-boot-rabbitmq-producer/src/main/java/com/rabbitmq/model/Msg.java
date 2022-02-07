@@ -6,5 +6,5 @@ import lombok.*;
 @Setter
 @ToString
 public class Msg {
-    private String id;
+    private String message;
 }
