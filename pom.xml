@@ -10,6 +10,8 @@
     <url>http://maven.apache.org</url>
 
     <modules>
+        <module>rabbitmq-producer</module>
+        <module>rabbitmq-consumer</module>
         <module>spring-boot-rabbitmq-consumer</module>
         <module>spring-boot-rabbitmq-producer</module>
     </modules>
