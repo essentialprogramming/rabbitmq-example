@@ -63,6 +63,16 @@ reducing the amount of code you have to write.
 </dependency>
 ```
 
+RabbitMQ Management
+===================
+To manage the RabbitMQ server, you can use the rabbitmq-management plugin. This plugin allows you to manage and monitor your RabbitMQ server in a variety of ways, such as listing and deleting exchanges, queues, bindings and users. You can send and receive messages, and monitor activity on specific queues.
+Once the plugin is installed, you are able to access it via the following url:
+
+http://[your-server]:15672/
+
+> The default username and password are [guest] and [guest]. Login, and you will be greeted with the RabbitMQ dashboard.
+
+
 Summary
 =======
 
