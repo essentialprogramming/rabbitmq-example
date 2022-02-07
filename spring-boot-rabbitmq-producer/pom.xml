@@ -72,6 +72,12 @@
 			<artifactId>disruptor</artifactId>
 			<version>3.4.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
