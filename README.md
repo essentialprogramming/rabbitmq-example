@@ -14,7 +14,7 @@ receiving and sending messages.
 
 RabbitMQ is an AMQP server. The server is freely available at https://www.rabbitmq.com/download.html. 
 
-There are two options for using rabbit locally: install or use a docker container. For convenience use [Docker Compose](https://docs.docker.com/compose/) to quickly launch a
+There are two options for using Rabbit locally: install or use a docker container. For convenience use [Docker Compose](https://docs.docker.com/compose/) to quickly launch a
 RabbitMQ server.
 
 ```
