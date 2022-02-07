@@ -47,11 +47,11 @@ You need to create a receiver that responds to published messages.
 Spring AMQP's `RabbitTemplate` provides everything you need to send and receive messages
 with RabbitMQ. Before you can send and receive messages, you need to: 
 
-- Declare the queue, the exchange, and the binding between them.
+- Declare the queue, the exchange, and the binding between them. ( Or create a durable queue and a durable exchange ) 
 - The `queue()` method creates an AMQP queue.
 - The `exchange()` method creates a topic exchange.
 - The `binding()` method binds these two together, defining the behavior that
-occurs when `RabbitTemplate` publishes to an exchange.
+occurs when `RabbitTemplate` publishes to an exchange. ( Send messages to the exchange to be routed to the queue based on a routing key ) 
 
 NOTE: Spring Boot automatically creates a connection factory and a RabbitTemplate,
 reducing the amount of code you have to write.
