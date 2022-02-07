@@ -5,8 +5,7 @@ publishes and subscribes to messages and creating sample Spring Boot application
 with that RabbitMQ server ( publish/subscribe to messages ).
 
 
-Set up RabbitMQ
-===============
+## :rocket: Set up RabbitMQ
 
 Before you can build your messaging application, you need to set up a server to handle
 receiving and sending messages.
@@ -56,6 +55,13 @@ occurs when `RabbitTemplate` publishes to an exchange. ( Send messages to the ex
 NOTE: Spring Boot automatically creates a connection factory and a RabbitTemplate,
 reducing the amount of code you have to write.
 
+## Maven Dependency ( Spring Boot ) 
+```xml
+<dependency>  
+ <groupId>org.springframework.boot</groupId>  
+ <artifactId>spring-boot-starter-amqp</artifactId>  
+</dependency>
+```
 
 Summary
 =======
