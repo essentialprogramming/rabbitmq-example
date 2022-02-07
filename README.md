@@ -67,4 +67,5 @@ Spring and RabbitMQ. You can do more with RabbitMQ, but this guide should provid
 * [Messaging with RabbitMQ](https://spring.io/guides/gs/messaging-rabbitmq/)
 * [Spring-AMQP](http://projects.spring.io/spring-amqp/)
 * [First steps with RabbitMQ and Spring Boot](https://medium.com/javarevisited/first-steps-with-rabbitmq-and-spring-boot-81d293554703)
+* [Detailed explanation of Springboot Integration RabbitMQ](https://www.codestudyblog.com/cs2112bga/1205234445.html)
 * [Building an Application with Spring Boot](https://spring.io/guides/gs/spring-boot/)
