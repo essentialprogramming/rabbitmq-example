@@ -1,6 +1,6 @@
-package com.avangarde.rabbitmq.springbootrabbitmqconsumer.controller;
+package com.rabbitmq.controller;
 
-import com.avangarde.rabbitmq.springbootrabbitmqconsumer.model.Msg;
+import com.rabbitmq.model.Msg;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 

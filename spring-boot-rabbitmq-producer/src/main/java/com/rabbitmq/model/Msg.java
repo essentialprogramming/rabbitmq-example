@@ -1,4 +1,4 @@
-package com.avangarde.rabbitmq.springbootrabbitmqproducer.model;
+package com.rabbitmq.model;
 
 import lombok.*;
 
