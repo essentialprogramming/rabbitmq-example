@@ -29,7 +29,7 @@ import static com.exception.ExceptionHandler.handleException;
 
 @Tag(description = "Queue", name = "")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Path("/producer")
+@Path("/publish")
 public class ProducerController {
 
     private final ProducerService producerService;
@@ -51,5 +51,4 @@ public class ProducerController {
                 .thenApplyAsync(json -> asyncResponse.resume(ok(json).build()), executorService)
                 .exceptionally(error -> asyncResponse.resume(handleException((CompletionException) error)));
     }
-
 }
