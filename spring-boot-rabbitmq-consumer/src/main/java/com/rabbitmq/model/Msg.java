@@ -1,4 +1,4 @@
-package com.avangarde.rabbitmq.springbootrabbitmqconsumer.model;
+package com.rabbitmq.model;
 
 import lombok.Getter;
 import lombok.Setter;

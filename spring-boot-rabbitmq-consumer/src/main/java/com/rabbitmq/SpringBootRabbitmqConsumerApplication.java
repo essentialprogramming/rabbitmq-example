@@ -1,13 +1,13 @@
-package com.avangarde.rabbitmq.springbootrabbitmqproducer;
+package com.rabbitmq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootRabbitmqProducerApplication {
+public class SpringBootRabbitmqConsumerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringBootRabbitmqProducerApplication.class, args);
+		SpringApplication.run(SpringBootRabbitmqConsumerApplication.class, args);
 	}
 
 }

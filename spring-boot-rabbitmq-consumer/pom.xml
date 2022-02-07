@@ -10,7 +10,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>com.avangarde.rabbitmq</groupId>
+	<groupId>com.rabbitmq</groupId>
 	<artifactId>spring-boot-rabbitmq-consumer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot-rabbitmq-consumer</name>

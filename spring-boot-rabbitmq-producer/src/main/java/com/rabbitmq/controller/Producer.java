@@ -1,6 +1,6 @@
-package com.avangarde.rabbitmq.springbootrabbitmqproducer.controller;
+package com.rabbitmq.controller;
 
-import com.avangarde.rabbitmq.springbootrabbitmqproducer.model.Msg;
+import com.rabbitmq.model.Msg;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
