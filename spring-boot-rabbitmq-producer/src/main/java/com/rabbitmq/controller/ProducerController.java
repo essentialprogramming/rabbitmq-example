@@ -16,14 +16,14 @@ public class ProducerController {
 
     private final ProducerService producerService;
 
-    @PostMapping("/post/direct")
+    @PostMapping("/post")
     public JsonResponse sendMessage(@RequestParam final String routeKey,
                                     @RequestBody final Message message) {
         return producerService.sendMessage(message, routeKey);
     }
 
-    @PostMapping("/post/fanout")
-    public JsonResponse sendMessageToFanout(@RequestBody final Message message) {
-        return producerService.sendMessageToFanout(message);
+    @PostMapping("/broadcast")
+    public JsonResponse sendBroadcastMessage(@RequestBody final Message message) {
+        return producerService.sendBroadcastMessage(message);
     }
 }

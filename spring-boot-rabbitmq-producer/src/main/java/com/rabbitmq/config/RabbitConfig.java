@@ -14,6 +14,7 @@ public class RabbitConfig {
 
     public final String EXCHANGE_DIRECT = "exchangeDirect";
     public final String EXCHANGE_FANOUT = "exchangeFanout";
+    public final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
 
     @Bean
     DirectExchange directExchange() {
@@ -23,6 +24,11 @@ public class RabbitConfig {
     @Bean
     FanoutExchange fanoutExchange() {
         return new FanoutExchange(EXCHANGE_FANOUT);
+    }
+
+    @Bean
+    FanoutExchange deadLetterFanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
     }
 
     @Bean

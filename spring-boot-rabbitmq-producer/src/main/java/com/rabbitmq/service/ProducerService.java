@@ -30,7 +30,7 @@ public class ProducerService {
                 .with("message", message.getMessage());
     }
 
-    public JsonResponse sendMessageToFanout(final Message message) {
+    public JsonResponse sendBroadcastMessage(final Message message) {
         LOG.info("Sending message={} to exchange={}", message, fanoutExchange.getName());
         rabbitTemplate.convertAndSend(fanoutExchange.getName(), EMPTY, message);
         return new JsonResponse()

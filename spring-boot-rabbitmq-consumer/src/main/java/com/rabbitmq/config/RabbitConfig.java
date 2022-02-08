@@ -1,11 +1,6 @@
 package com.rabbitmq.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -16,20 +11,29 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public final String QUEUE = "queue";
-    public final String FANOUT_QUEUE = "fanoutQueue";
-    public final String EXCHANGE_DIRECT = "exchangeDirect";
-    public final String EXCHANGE_FANOUT = "exchangeFanout";
-    public final String ROUTING_A = "routingA";
+    public static final String QUEUE = "queue";
+    public static final String FANOUT_QUEUE = "fanoutQueue";
+    public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
+    public static final String EXCHANGE_DIRECT = "exchangeDirect";
+    public static final String EXCHANGE_FANOUT = "exchangeFanout";
+    public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
+    public static final String ROUTING_A = "routingA";
 
     @Bean
     Queue queueA() {
-        return new Queue(QUEUE, false);
+        return QueueBuilder.durable(QUEUE).build();
     }
 
     @Bean
     Queue queueFanout() {
-        return new Queue(FANOUT_QUEUE, false);
+        return QueueBuilder.durable(FANOUT_QUEUE)
+                .withArgument("x-dead-letter-exchange", EXCHANGE_FANOUT_DEAD_LETTER)
+                .build();
+    }
+
+    @Bean
+    Queue fanoutDLQ() {
+        return QueueBuilder.durable(FANOUT_DLQ).build();
     }
 
     @Bean
@@ -43,24 +47,27 @@ public class RabbitConfig {
     }
 
     @Bean
-    Binding binding(DirectExchange exchange) {
-        return bind(queueA()).to(exchange).with(ROUTING_A);
+    FanoutExchange deadLetterFanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
     }
 
     @Bean
-    Binding bindingFanout(FanoutExchange exchange) {
-        return bind(queueFanout()).to(exchange);
+    Binding bindingDirect() {
+        return bind(queueA()).to(directExchange()).with(ROUTING_A);
+    }
+
+    @Bean
+    Binding bindingFanout() {
+        return bind(queueFanout()).to(fanoutExchange());
+    }
+
+    @Bean
+    Binding bindingFanoutDLQ() {
+        return bind(fanoutDLQ()).to(deadLetterFanoutExchange());
     }
 
     @Bean
     public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
-    }
-
-    @Bean
-    public RabbitTemplate template(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(converter());
-        return rabbitTemplate;
     }
 }
