@@ -24,7 +24,7 @@ public class ProducerService {
         return new JsonResponse().with("message", message.getMessage());
     }
 
-    public JsonResponse sendMessageToFanout(final Message message) {
+    public JsonResponse sendBroadcastMessage(final Message message) {
         rabbitTemplate.convertAndSend(fanoutExchange.getName(), EMPTY, message);
         return new JsonResponse().with("message", message.getMessage());
     }

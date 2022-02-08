@@ -50,7 +50,7 @@ public class ProducerController {
     }
 
     @POST
-    @Path("/fanout")
+    @Path("/broadcast")
     @Consumes("application/json")
     @Produces("application/json")
     @Operation(summary = "Send a message to fanout.",
@@ -60,10 +60,10 @@ public class ProducerController {
                                     schema = @Schema(implementation = Message.class))),
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
-    public void sendMessageToFanout(Message message, @Suspended AsyncResponse asyncResponse) {
+    public void sendBroadcastMessage(Message message, @Suspended AsyncResponse asyncResponse) {
 
         final ExecutorService executorService = getExecutorService();
-        computeAsync(() -> producerService.sendMessageToFanout(message), executorService)
+        computeAsync(() -> producerService.sendBroadcastMessage(message), executorService)
                 .thenApplyAsync(json -> asyncResponse.resume(ok(json).build()), executorService)
                 .exceptionally(error -> asyncResponse.resume(handleException((CompletionException) error)));
     }
