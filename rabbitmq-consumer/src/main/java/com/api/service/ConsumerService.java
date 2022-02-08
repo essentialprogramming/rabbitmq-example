@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConsumerService {
 
-    @RabbitListener(containerFactory="rabbitListenerContainerFactory", queues = "queue")
-    public void receiveMessage(Message message) {
+    @RabbitListener(queues = {"queue", "fanoutQueue"})
+    private void receiveMessage(final Message message) {
         System.out.println(message.getMessage());
     }
 }
