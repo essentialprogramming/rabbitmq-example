@@ -5,8 +5,7 @@ publishes and subscribes to messages and creating sample Spring Boot application
 with that RabbitMQ server ( publish/subscribe to messages ).
 
 
-Set up RabbitMQ
-===============
+## :rocket: Set up RabbitMQ
 
 Before you can build your messaging application, you need to set up a server to handle
 receiving and sending messages.
@@ -55,6 +54,23 @@ occurs when `RabbitTemplate` publishes to an exchange. ( Send messages to the ex
 
 NOTE: Spring Boot automatically creates a connection factory and a RabbitTemplate,
 reducing the amount of code you have to write.
+
+## Maven Dependency ( Spring Boot ) 
+```xml
+<dependency>  
+ <groupId>org.springframework.boot</groupId>  
+ <artifactId>spring-boot-starter-amqp</artifactId>  
+</dependency>
+```
+
+RabbitMQ Management
+===================
+To manage the RabbitMQ server, you can use the [rabbitmq-management plugin](https://www.rabbitmq.com/management.html). This plugin allows you to manage and monitor your RabbitMQ server in a variety of ways, such as listing and deleting exchanges, queues, bindings and users. You can send and receive messages, and monitor activity on specific queues.
+Once the plugin is installed, you are able to access it via the following url:
+
+http://[your-server]:15672/
+
+> The default username and password are [guest] and [guest]. Login, and you will be greeted with the RabbitMQ dashboard.
 
 
 Summary
