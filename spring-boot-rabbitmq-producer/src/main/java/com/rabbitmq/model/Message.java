@@ -5,6 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class Msg {
+public class Message {
     private String message;
 }
