@@ -1,8 +1,11 @@
 package com.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 @Builder
 @Getter
@@ -13,4 +16,7 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     private String message;
+
+    @JsonIgnore
+    private Timestamp timestamp = Timestamp.from(Instant.now());
 }
