@@ -12,8 +12,8 @@ public class ConsumerService {
 
     private static final Logger LOG = getLogger(ConsumerService.class);
 
-    @RabbitListener(queues = "queue")
-    private void receive(final Message msg) {
-        LOG.info("Received message={}", msg);
+    @RabbitListener(queues = {"queue", "fanoutQueue"})
+    private void receive(final Message message) {
+        LOG.info("Received message={}", message);
     }
 }

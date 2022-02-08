@@ -1,9 +1,7 @@
 package com.rabbitmq.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -14,23 +12,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public final String QUEUE = "queue";
     public final String EXCHANGE_DIRECT = "exchangeDirect";
-    public final String ROUTING_A = "routingA";
+    public final String EXCHANGE_FANOUT = "exchangeFanout";
 
     @Bean
-    Queue queueA() {
-        return new Queue(QUEUE, false);
-    }
-
-    @Bean
-    DirectExchange exchange() {
+    DirectExchange directExchange() {
         return new DirectExchange(EXCHANGE_DIRECT);
     }
 
     @Bean
-    Binding binding(Queue queueA, DirectExchange exchange) {
-        return BindingBuilder.bind(queueA).to(exchange).with(ROUTING_A);
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT);
     }
 
     @Bean

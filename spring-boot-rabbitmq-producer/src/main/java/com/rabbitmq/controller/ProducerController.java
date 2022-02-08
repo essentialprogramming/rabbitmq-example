@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -17,8 +16,14 @@ public class ProducerController {
 
     private final ProducerService producerService;
 
-    @PostMapping("/post")
-    public JsonResponse send(@RequestBody final Message message) {
-        return producerService.sendMessage(message);
+    @PostMapping("/post/direct")
+    public JsonResponse sendMessage(@RequestParam final String routeKey,
+                                    @RequestBody final Message message) {
+        return producerService.sendMessage(message, routeKey);
+    }
+
+    @PostMapping("/post/fanout")
+    public JsonResponse sendMessageToFanout(@RequestBody final Message message) {
+        return producerService.sendMessageToFanout(message);
     }
 }
