@@ -12,7 +12,6 @@ import java.time.Instant;
 @Setter
 @ToString
 public class Message {
-
     private String message;
 
     @JsonIgnore

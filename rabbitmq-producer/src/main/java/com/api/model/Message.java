@@ -14,7 +14,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message implements Serializable {
-
     private String message;
 
     @JsonIgnore

@@ -26,6 +26,6 @@ public class Producer {
     public String send(@RequestBody Msg msg) {
         LOG.info("Sending message={} to exchange={}", msg, directExchange.getName());
         rabbitTemplate.convertAndSend(directExchange.getName(), "routingA", msg);
-        return msg.getMessage();
+        return "message: " + msg.getMessage()+ '\n' + "date: " + msg.getTimestamp().toString();
     }
 }
