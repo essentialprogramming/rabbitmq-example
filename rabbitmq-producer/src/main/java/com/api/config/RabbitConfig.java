@@ -14,15 +14,12 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static com.api.env.resources.AppResources.*;
 import static java.util.Arrays.asList;
 
 @EnableRabbit
 @Configuration
 public class RabbitConfig {
-
-    public final String EXCHANGE_DIRECT = "exchangeDirect";
-    public final String EXCHANGE_FANOUT = "exchangeFanout";
-    public final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
 
     @Bean
     public RabbitAdmin createAdmin() {
@@ -35,17 +32,17 @@ public class RabbitConfig {
 
     @Bean
     DirectExchange directExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT);
+        return new DirectExchange(RABBITMQ_EXCHANGE_DIRECT.value());
     }
 
     @Bean
     FanoutExchange fanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT);
+        return new FanoutExchange(RABBITMQ_EXCHANGE_FANOUT.value());
     }
 
     @Bean
     FanoutExchange deadLetterFanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
+        return new FanoutExchange(RABBITMQ_EXCHANGE_FANOUT_DL.value());
     }
 
     @Bean
