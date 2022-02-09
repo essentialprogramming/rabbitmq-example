@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +19,12 @@ public class ProducerController {
     private final ProducerService producerService;
 
     @PostMapping("/post")
-    public JsonResponse send(@RequestParam Message message,@RequestParam RoutingEnum routingEnum) {
+    public JsonResponse send(@RequestParam Message message, @RequestParam RoutingEnum routingEnum) {
         return producerService.sendMessage(message, routingEnum);
+    }
+
+    @PostMapping("/broadcast")
+    public JsonResponse sendBroadcastMessage(@RequestBody final Message message) {
+        return producerService.sendBroadcastMessage(message);
     }
 }

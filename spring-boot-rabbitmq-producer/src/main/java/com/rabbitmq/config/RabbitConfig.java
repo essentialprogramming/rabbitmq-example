@@ -1,6 +1,7 @@
 package com.rabbitmq.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -12,16 +13,27 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     public final String EXCHANGE_DIRECT = "exchangeDirect";
+    public final String EXCHANGE_FANOUT = "exchangeFanout";
+    public final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
+
+    @Bean
+    DirectExchange directExchange() {
+        return new DirectExchange(EXCHANGE_DIRECT);
+    }
 
     @Bean
     DirectExchange deadLetterExchange() {
         return new DirectExchange("deadLetterExchange");
     }
 
+    @Bean
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT);
+    }
 
     @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE_DIRECT);
+    FanoutExchange deadLetterFanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
     }
 
     @Bean

@@ -1,57 +1,77 @@
 package com.api.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.Arrays.asList;
+
 @EnableRabbit
 @Configuration
 public class RabbitConfig {
 
-    public final String QUEUE = "queue";
-    public final String EXCHANGEDIRECT = "exchangeDirect";
-    public final String ROUTINGA = "routingA";
+    public final String EXCHANGE_DIRECT = "exchangeDirect";
+    public final String EXCHANGE_FANOUT = "exchangeFanout";
+    public final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
 
     @Bean
-    Queue queueA(){
-        return new Queue(QUEUE,false);
+    public RabbitAdmin createAdmin() {
+        final RabbitAdmin admin = new RabbitAdmin(connectionFactory());
+        asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange())
+                .forEach(admin::declareExchange);
+        return admin;
+
     }
 
     @Bean
-    DirectExchange exchange(){
-        return new DirectExchange(EXCHANGEDIRECT);
+    DirectExchange directExchange() {
+        return new DirectExchange(EXCHANGE_DIRECT);
     }
 
     @Bean
-    Binding binding(Queue queueA, DirectExchange exchange){
-        return  BindingBuilder.bind(queueA).to(exchange).with(ROUTINGA);
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT);
     }
 
+    @Bean
+    FanoutExchange deadLetterFanoutExchange() {
+        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
+    }
 
     @Bean
-    public MessageConverter converter(){
+    public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
     public ConnectionFactory connectionFactory() {
-       CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-       connectionFactory.setUsername("guest");
-       connectionFactory.setPassword("guest");
-       return connectionFactory;
-   }
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
+        connectionFactory.setUsername("guest");
+        connectionFactory.setPassword("guest");
+        return connectionFactory;
+    }
 
     @Bean
-    public RabbitTemplate template(ConnectionFactory connectionFactory){
+    public RabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(converter());
+        factory.setMaxConcurrentConsumers(5);
+        return factory;
+    }
+
+    @Bean
+    public RabbitTemplate template(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
