@@ -1,7 +1,6 @@
 package com.rabbitmq.service;
 
 import com.rabbitmq.exceptions.MessageException;
-import com.rabbitmq.exceptions.MessageException;
 import com.rabbitmq.model.Message;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

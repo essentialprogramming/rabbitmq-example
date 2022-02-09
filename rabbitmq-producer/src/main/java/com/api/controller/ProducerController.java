@@ -1,6 +1,7 @@
 package com.api.controller;
 
 import com.api.model.Message;
+import com.api.model.RoutingEnum;
 import com.api.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,7 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -39,12 +42,12 @@ public class ProducerController {
                                     schema = @Schema(implementation = Message.class))),
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
-    public void sendMessage(@QueryParam("routeKey") String routeKey,
+    public void sendMessage(@NotNull @RequestParam RoutingEnum routingEnum,
                             Message message,
                             @Suspended AsyncResponse asyncResponse) {
 
         final ExecutorService executorService = getExecutorService();
-        computeAsync(() -> producerService.sendMessage(message, routeKey), executorService)
+        computeAsync(() -> producerService.sendMessage(message, routingEnum.getRouting()), executorService)
                 .thenApplyAsync(json -> asyncResponse.resume(ok(json).build()), executorService)
                 .exceptionally(error -> asyncResponse.resume(handleException((CompletionException) error)));
     }
