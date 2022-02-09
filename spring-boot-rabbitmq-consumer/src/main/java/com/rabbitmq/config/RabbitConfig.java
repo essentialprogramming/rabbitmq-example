@@ -20,6 +20,7 @@ public class RabbitConfig {
     public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
     public static final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
     public static final String DLQ_ROUTING_KEY = "deadLetterKey";
+    public static final String DIRECT_ROUTING = "SPRINGBOOT_RABBITMQ_CONSUMER";
 
     @Bean
     Queue queueA(){
@@ -68,7 +69,7 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingDirect() {
-        return bind(queueA()).to(directExchange()).with("SPRINGBOOT_RABBITMQ_CONSUMER");
+        return bind(queueA()).to(directExchange()).with(DIRECT_ROUTING);
     }
 
     @Bean

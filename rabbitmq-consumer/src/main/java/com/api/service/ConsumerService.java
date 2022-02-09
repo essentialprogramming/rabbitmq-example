@@ -16,10 +16,11 @@ public class ConsumerService {
     @RabbitListener(queues = {DIRECT_QUEUE, FANOUT_QUEUE})
     private void receiveMessage(final Message message) {
         LOG.info("Received message={}", message);
-        throw new RuntimeException("Failed");
+        if (message.getMessage().equals("string"))
+            throw new RuntimeException();
     }
 
-    @RabbitListener(queues = FANOUT_DLQ)
+    @RabbitListener(queues = {DIRECT_DLQ, FANOUT_DLQ})
     private void processFailedMessages(final Message message) {
         LOG.info("Received failed message={}", message);
     }

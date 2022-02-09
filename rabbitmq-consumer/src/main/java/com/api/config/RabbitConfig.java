@@ -2,16 +2,19 @@ package com.api.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 
 import static java.util.Arrays.asList;
 import static org.springframework.amqp.core.BindingBuilder.bind;
@@ -21,12 +24,15 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 public class RabbitConfig {
 
     public static final String DIRECT_QUEUE = "directQueue";
+    public static final String DIRECT_DLQ = "directDeadLetterQueue";
     public static final String FANOUT_QUEUE = "fanoutQueue";
     public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
     public static final String EXCHANGE_DIRECT = "exchangeDirect";
     public static final String EXCHANGE_FANOUT = "exchangeFanout";
     public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
-    public static final String ROUTING_A = "routingA";
+    public static final String DIRECT_ROUTING = "RABBITMQ_CONSUMER";
+    public static final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
+    public static final String DLQ_ROUTING_KEY = "deadLetterKey";
 
     @Bean
     public RabbitAdmin createAdmin() {
@@ -37,7 +43,15 @@ public class RabbitConfig {
 
     @Bean
     Queue queueDirect() {
-        return QueueBuilder.durable(DIRECT_QUEUE).build();
+        return QueueBuilder.durable(DIRECT_QUEUE)
+                .withArgument("x-dead-letter-exchange", EXCHANGE_DIRECT_DEAD_LETTER)
+                .withArgument("x-dead-letter-routing-key", DLQ_ROUTING_KEY)
+                .build();
+    }
+
+    @Bean
+    Queue dlq() {
+        return QueueBuilder.durable(DIRECT_DLQ).build();
     }
 
     @Bean
@@ -58,6 +72,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(EXCHANGE_DIRECT_DEAD_LETTER);
+    }
+
+    @Bean
     FanoutExchange fanoutExchange() {
         return new FanoutExchange(EXCHANGE_FANOUT);
     }
@@ -69,7 +88,12 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingDirect() {
-        return bind(queueDirect()).to(directExchange()).with(ROUTING_A);
+        return bind(queueDirect()).to(directExchange()).with(DIRECT_ROUTING);
+    }
+
+    @Bean
+    Binding bindingDirectDLQ() {
+        return bind(dlq()).to(deadLetterExchange()).with(DLQ_ROUTING_KEY);
     }
 
     @Bean
@@ -108,15 +132,25 @@ public class RabbitConfig {
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(converter());
         factory.setMaxConcurrentConsumers(5);
+        factory.setAdviceChain(retriesSetting());
         return factory;
     }
 
+    @Bean
+    public RetryOperationsInterceptor retriesSetting() {
+        return RetryInterceptorBuilder.stateless()
+                .maxAttempts(3)
+                .backOffOptions(3000, 2, 10000)
+                .recoverer(new RejectAndDontRequeueRecoverer())
+                .build();
+    }
+
     private void declareAll(final RabbitAdmin admin) {
-        asList(queueDirect(), queueFanout(), fanoutDLQ())
+        asList(queueDirect(), queueFanout(), fanoutDLQ(), dlq())
                 .forEach(admin::declareQueue);
-        asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange())
+        asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange(), deadLetterExchange())
                 .forEach(admin::declareExchange);
-        asList(bindingDirect(), bindingFanout(), bindingFanoutDLQ())
+        asList(bindingDirect(), bindingFanout(), bindingFanoutDLQ(), bindingDirectDLQ())
                 .forEach(admin::declareBinding);
     }
 }
