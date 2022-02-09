@@ -11,7 +11,7 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public static final String DIRECT_QUEUE = "directQueue";
+    public static final String DIRECT_QUEUE = "spring.boot.directQueue";
     public static final String DIRECT_DLQ = "directDeadLetterQueue";
     public static final String FANOUT_QUEUE = "fanoutQueue";
     public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
