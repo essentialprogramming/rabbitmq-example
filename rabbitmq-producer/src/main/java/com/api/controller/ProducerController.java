@@ -42,7 +42,7 @@ public class ProducerController {
                                     schema = @Schema(implementation = Message.class))),
                     @ApiResponse(responseCode = "500", description = "Internal server error.")
             })
-    public void sendMessage(@NotNull @RequestParam RoutingEnum routingEnum,
+    public void sendMessage(@NotNull @QueryParam("RoutingEnum") RoutingEnum routingEnum,
                             Message message,
                             @Suspended AsyncResponse asyncResponse) {
 
