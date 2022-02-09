@@ -11,23 +11,27 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE = "queue";
+    public static final String DIRECT_QUEUE = "directQueue";
+    public static final String DIRECT_DLQ = "directDeadLetterQueue";
     public static final String FANOUT_QUEUE = "fanoutQueue";
     public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
     public static final String EXCHANGE_DIRECT = "exchangeDirect";
     public static final String EXCHANGE_FANOUT = "exchangeFanout";
     public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
-    public static final String ROUTING_A = "routingA";
+    public static final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
+    public static final String DLQ_ROUTING_KEY = "deadLetterKey";
 
     @Bean
     Queue queueA(){
-        return QueueBuilder.durable(QUEUE).withArgument("x-dead-letter-exchange", "deadLetterExchange")
-                .withArgument("x-dead-letter-routing-key", "deadLetter").build();
+        return QueueBuilder.durable(DIRECT_QUEUE)
+                .withArgument("x-dead-letter-exchange", EXCHANGE_DIRECT_DEAD_LETTER)
+                .withArgument("x-dead-letter-routing-key", DLQ_ROUTING_KEY)
+                .build();
     }
 
     @Bean
     Queue dlq() {
-        return QueueBuilder.durable("deadLetter.queue").build();
+        return QueueBuilder.durable(DIRECT_DLQ).build();
     }
 
     @Bean
@@ -49,7 +53,7 @@ public class RabbitConfig {
 
     @Bean
     DirectExchange deadLetterExchange() {
-        return new DirectExchange("deadLetterExchange");
+        return new DirectExchange(EXCHANGE_DIRECT_DEAD_LETTER);
     }
 
     @Bean
@@ -69,7 +73,7 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingDirectDLQ() {
-        return bind(dlq()).to(deadLetterExchange()).with("deadLetter");
+        return bind(dlq()).to(deadLetterExchange()).with(DLQ_ROUTING_KEY);
     }
 
     @Bean

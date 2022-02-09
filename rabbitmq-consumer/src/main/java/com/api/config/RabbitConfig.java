@@ -20,7 +20,7 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public static final String QUEUE = "queue";
+    public static final String DIRECT_QUEUE = "directQueue";
     public static final String FANOUT_QUEUE = "fanoutQueue";
     public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
     public static final String EXCHANGE_DIRECT = "exchangeDirect";
@@ -37,7 +37,7 @@ public class RabbitConfig {
 
     @Bean
     Queue queueDirect() {
-        return QueueBuilder.durable(QUEUE).build();
+        return QueueBuilder.durable(DIRECT_QUEUE).build();
     }
 
     @Bean
