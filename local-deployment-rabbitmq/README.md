@@ -15,13 +15,8 @@ Docker must be installed and running.
 ![RabbitMqLogin](local-deployment-rabbitmq/img/login.png)
 
 
-
-
-
-
-
 ### ❄ Overview
-The RabbitMQ management interface groups the information into 6 tabs, starting with Overview where you find details about: queued messages, messages rate, nodes, port and contexts, global count and import/export definitions
+The RabbitMQ management interface groups the information into 6 tabs, starting with Overview where you find details about: queued messages, messages rate, nodes, port and contexts, global count and import/export definitions.
 
 ![RabbitMqOverview](local-deployment-rabbitmq/img/overview.png)
 
