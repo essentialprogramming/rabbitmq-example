@@ -5,7 +5,6 @@ import com.rabbitmq.model.RoutingEnum;
 import com.rabbitmq.util.web.JsonResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +23,7 @@ public class ProducerService {
         LOG.info("Sending message={} to exchange={}", message, "exchangeDirect");
         rabbitTemplate.convertAndSend("exchangeDirect", routingEnum.getRouting() , message);
         return new JsonResponse()
-                .with("message", message.getMessage());
+                .with("message", message.getMessage())
+                .with("date", message.getTimestamp());
     }
 }

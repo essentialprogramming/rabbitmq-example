@@ -1,14 +1,11 @@
 package com.rabbitmq.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.sql.Timestamp;
-import java.time.Instant;
+import lombok.*;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 @Getter
 @Setter
