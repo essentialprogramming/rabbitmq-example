@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -12,6 +13,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.Arrays.asList;
 import static org.springframework.amqp.core.BindingBuilder.bind;
 
 @EnableRabbit
@@ -25,6 +27,13 @@ public class RabbitConfig {
     public static final String EXCHANGE_FANOUT = "exchangeFanout";
     public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
     public static final String ROUTING_A = "routingA";
+
+    @Bean
+    public RabbitAdmin createAdmin() {
+        final RabbitAdmin admin = new RabbitAdmin(connectionFactory());
+        declareAll(admin);
+        return admin;
+    }
 
     @Bean
     Queue queueA() {
@@ -73,9 +82,8 @@ public class RabbitConfig {
         return bind(fanoutDLQ()).to(deadLetterFanoutExchange());
     }
 
-
     @Bean
-    public MessageConverter converter(){
+    public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
@@ -84,11 +92,11 @@ public class RabbitConfig {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");
-       return connectionFactory;
+        return connectionFactory;
     }
 
     @Bean
-    public RabbitTemplate template(ConnectionFactory connectionFactory){
+    public RabbitTemplate template(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(converter());
         return rabbitTemplate;
@@ -96,10 +104,19 @@ public class RabbitConfig {
 
     @Bean
     public RabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(converter());
         factory.setMaxConcurrentConsumers(5);
         return factory;
+    }
+
+    private void declareAll(final RabbitAdmin admin) {
+        asList(queueA(), queueFanout(), fanoutDLQ())
+                .forEach(admin::declareQueue);
+        asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange())
+                .forEach(admin::declareExchange);
+        asList(bindingDirect(), bindingFanout(), bindingFanoutDLQ())
+                .forEach(admin::declareBinding);
     }
 }
