@@ -1,7 +1,6 @@
 package com.rabbitmq.service;
 
 import com.rabbitmq.exceptions.MessageException;
-import com.rabbitmq.exceptions.MessageException;
 import com.rabbitmq.model.Message;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -15,14 +14,14 @@ public class ConsumerService {
 
     private static final Logger LOG = getLogger(ConsumerService.class);
 
-    @RabbitListener(queues = {QUEUE, FANOUT_QUEUE})
-    private void receive(final Message message) throws MessageException{
+    @RabbitListener(queues = {DIRECT_QUEUE, FANOUT_QUEUE})
+    private void receive(final Message message) throws MessageException {
         LOG.info("Received message={}", message);
-        if(message.getMessage().equals("string"))
+        if (message.getMessage().equals("string"))
             throw new MessageException();
     }
 
-    @RabbitListener(queues = FANOUT_DLQ)
+    @RabbitListener(queues = {DIRECT_DLQ, FANOUT_DLQ})
     private void processFailedMessages(final Message message) {
         LOG.info("Received failed message={}", message);
     }

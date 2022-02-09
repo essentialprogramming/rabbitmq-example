@@ -13,9 +13,10 @@ public class ConsumerService {
 
     private static final Logger LOG = getLogger(ConsumerService.class);
 
-    @RabbitListener(queues = {QUEUE, FANOUT_QUEUE})
+    @RabbitListener(queues = {DIRECT_QUEUE, FANOUT_QUEUE})
     private void receiveMessage(final Message message) {
         LOG.info("Received message={}", message);
+        throw new RuntimeException("Failed");
     }
 
     @RabbitListener(queues = FANOUT_DLQ)

@@ -19,7 +19,7 @@ public class SwaggerConfig {
                 .builder()
                 .group("RabbitMQ Producer API")
                 .packagesToScan(packagesToScan)
-                .pathsToMatch("/post")
+                .pathsToMatch("/post","/broadcast")
                 .addOpenApiCustomiser(statusApiCustomizer())
                 .build();
     }

@@ -19,7 +19,7 @@ public class ProducerController {
     private final ProducerService producerService;
 
     @PostMapping("/post")
-    public JsonResponse send(@RequestParam Message message, @RequestParam RoutingEnum routingEnum) {
+    public JsonResponse send(@RequestBody final Message message, @RequestParam final RoutingEnum routingEnum) {
         return producerService.sendMessage(message, routingEnum);
     }
 
