@@ -8,10 +8,15 @@ import lombok.ToString;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @ToString
-public class Message {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Message implements Serializable {
     private String message;
 
     @JsonIgnore

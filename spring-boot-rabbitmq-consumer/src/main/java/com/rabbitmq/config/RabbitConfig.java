@@ -1,11 +1,6 @@
 package com.rabbitmq.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -16,32 +11,42 @@ public class RabbitConfig {
 
     public final String QUEUE = "queue";
     public final String EXCHANGEDIRECT = "exchangeDirect";
-    public final String ROUTINGA = "routingA";
 
     @Bean
-    Queue queueA() {
-        return new Queue(QUEUE, false);
+    Queue queueA(){
+        return QueueBuilder.durable(QUEUE).withArgument("x-dead-letter-exchange", "deadLetterExchange")
+                .withArgument("x-dead-letter-routing-key", "deadLetter").build();
     }
 
     @Bean
-    DirectExchange exchange() {
+    Queue dlq() {
+        return QueueBuilder.durable("deadLetter.queue").build();
+    }
+
+    @Bean
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange("deadLetterExchange");
+    }
+
+    @Bean
+    DirectExchange exchange(){
         return new DirectExchange(EXCHANGEDIRECT);
     }
 
     @Bean
-    Binding binding(Queue queueA, DirectExchange exchange) {
-        return BindingBuilder.bind(queueA).to(exchange).with(ROUTINGA);
+    Binding binding(Queue queueA, DirectExchange exchange){
+        return  BindingBuilder.bind(queueA).to(exchange).with("SPRINGBOOT_RABBITMQ_CONSUMER");
     }
+
+    @Bean
+    Binding DLQbinding() {
+        return BindingBuilder.bind(dlq()).to(deadLetterExchange()).with("deadLetter");
+    }
+
 
     @Bean
     public MessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Bean
-    public RabbitTemplate template(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(converter());
-        return rabbitTemplate;
-    }
 }
