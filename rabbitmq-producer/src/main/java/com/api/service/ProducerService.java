@@ -19,6 +19,8 @@ public class ProducerService {
     public JsonResponse getMessage(Message message) {
 
         rabbitTemplate.convertAndSend(directExchange.getName(),"routingA",message);
-        return new JsonResponse().with("message", message.getMessage());
+        return new JsonResponse().with("message", message.getMessage())
+                                 .with("date", message.getTimestamp().toString());
+
     }
 }

@@ -9,6 +9,6 @@ public class ConsumerService {
 
     @RabbitListener(containerFactory="rabbitListenerContainerFactory", queues = "queue")
     public void receiveMessage(Message message) {
-        System.out.println(message.getMessage());
+        System.out.println("message: " + message.getMessage()+ '\n' + "date: " + message.getTimestamp().toString());
     }
 }
