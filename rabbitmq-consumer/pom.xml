@@ -292,6 +292,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${io.swagger.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.aventrix.jnanoid</groupId>
 			<artifactId>jnanoid</artifactId>
 			<version>2.0.0</version>
@@ -313,11 +319,6 @@
 			<artifactId>spring-messaging</artifactId>
 			<version>5.3.15</version>
 		</dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.18</version>
-        </dependency>
 
     </dependencies>
 
