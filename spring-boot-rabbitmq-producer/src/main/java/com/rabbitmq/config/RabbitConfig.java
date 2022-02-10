@@ -6,35 +6,40 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
 
-    public final String EXCHANGE_DIRECT = "exchangeDirect";
-    public final String EXCHANGE_FANOUT = "exchangeFanout";
-    public final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
-    public final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
+    @Value("${app.rabbitmq.exchange.direct}")
+    private String exchangeDirect;
+    @Value("${app.rabbitmq.exchange.fanout}")
+    private String exchangeFanout;
+    @Value("${app.rabbitmq.exchange.direct.deadLetter}")
+    private String exchangeDirectDL;
+    @Value("${app.rabbitmq.exchange.fanout.deadLetter}")
+    private String exchangeFanoutDL;
 
     @Bean
     DirectExchange directExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT);
+        return new DirectExchange(exchangeDirect);
     }
 
     @Bean
     DirectExchange deadLetterDirectExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT_DEAD_LETTER);
+        return new DirectExchange(exchangeDirectDL);
     }
 
     @Bean
     FanoutExchange fanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT);
+        return new FanoutExchange(exchangeFanout);
     }
 
     @Bean
     FanoutExchange deadLetterFanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
+        return new FanoutExchange(exchangeFanoutDL);
     }
 
     @Bean

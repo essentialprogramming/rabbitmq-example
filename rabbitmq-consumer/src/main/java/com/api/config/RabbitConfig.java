@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 
+import static com.api.env.resources.AppResources.*;
 import static java.util.Arrays.asList;
 import static org.springframework.amqp.core.BindingBuilder.bind;
 
@@ -23,16 +24,6 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public static final String DIRECT_QUEUE = "directQueue";
-    public static final String DIRECT_DLQ = "directDeadLetterQueue";
-    public static final String FANOUT_QUEUE = "fanoutQueue";
-    public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
-    public static final String EXCHANGE_DIRECT = "exchangeDirect";
-    public static final String EXCHANGE_FANOUT = "exchangeFanout";
-    public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
-    public static final String DIRECT_ROUTING = "RABBITMQ_CONSUMER";
-    public static final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
-    public static final String DLQ_ROUTING_KEY = "deadLetterKey";
 
     @Bean
     public RabbitAdmin createAdmin() {
@@ -43,57 +34,57 @@ public class RabbitConfig {
 
     @Bean
     Queue queueDirect() {
-        return QueueBuilder.durable(DIRECT_QUEUE)
-                .withArgument("x-dead-letter-exchange", EXCHANGE_DIRECT_DEAD_LETTER)
-                .withArgument("x-dead-letter-routing-key", DLQ_ROUTING_KEY)
+        return QueueBuilder.durable(RABBITMQ_DIRECT_QUEUE.value())
+                .withArgument("x-dead-letter-exchange", RABBITMQ_EXCHANGE_DIRECT_DL.value())
+                .withArgument("x-dead-letter-routing-key", RABBITMQ_DIRECT_ROUTING_KEY_DL.value())
                 .build();
     }
 
     @Bean
-    Queue dlq() {
-        return QueueBuilder.durable(DIRECT_DLQ).build();
+    Queue directDlq() {
+        return QueueBuilder.durable(RABBITMQ_DIRECT_QUEUE_DL.value()).build();
     }
 
     @Bean
     Queue queueFanout() {
-        return QueueBuilder.durable(FANOUT_QUEUE)
-                .withArgument("x-dead-letter-exchange", EXCHANGE_FANOUT_DEAD_LETTER)
+        return QueueBuilder.durable(RABBITMQ_EXCHANGE_FANOUT.value())
+                .withArgument("x-dead-letter-exchange", RABBITMQ_EXCHANGE_FANOUT_DL.value())
                 .build();
     }
 
     @Bean
-    Queue fanoutDLQ() {
-        return QueueBuilder.durable(FANOUT_DLQ).build();
+    Queue fanoutDlq() {
+        return QueueBuilder.durable(RABBITMQ_FANOUT_QUEUE_DL.value()).build();
     }
 
     @Bean
     DirectExchange directExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT);
+        return new DirectExchange(RABBITMQ_EXCHANGE_DIRECT.value());
     }
 
     @Bean
     DirectExchange deadLetterExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT_DEAD_LETTER);
+        return new DirectExchange(RABBITMQ_EXCHANGE_DIRECT_DL.value());
     }
 
     @Bean
     FanoutExchange fanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT);
+        return new FanoutExchange(RABBITMQ_EXCHANGE_FANOUT.value());
     }
 
     @Bean
     FanoutExchange deadLetterFanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
+        return new FanoutExchange(RABBITMQ_EXCHANGE_FANOUT_DL.value());
     }
 
     @Bean
     Binding bindingDirect() {
-        return bind(queueDirect()).to(directExchange()).with(DIRECT_ROUTING);
+        return bind(queueDirect()).to(directExchange()).with(RABBITMQ_DIRECT_ROUTING_KEY.value().toString());
     }
 
     @Bean
     Binding bindingDirectDLQ() {
-        return bind(dlq()).to(deadLetterExchange()).with(DLQ_ROUTING_KEY);
+        return bind(directDlq()).to(deadLetterExchange()).with(RABBITMQ_DIRECT_ROUTING_KEY_DL.value().toString());
     }
 
     @Bean
@@ -103,7 +94,7 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingFanoutDLQ() {
-        return bind(fanoutDLQ()).to(deadLetterFanoutExchange());
+        return bind(fanoutDlq()).to(deadLetterFanoutExchange());
     }
 
     @Bean
@@ -113,9 +104,9 @@ public class RabbitConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(RABBITMQ_HOST.value().toString());
+        connectionFactory.setUsername(RABBITMQ_USERNAME.value());
+        connectionFactory.setPassword(RABBITMQ_PASSWORD.value());
         return connectionFactory;
     }
 
@@ -127,11 +118,11 @@ public class RabbitConfig {
     }
 
     @Bean
-    public RabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+    public RabbitListenerContainerFactory rabbitListenerContainerFactory(final ConnectionFactory connectionFactory) {
         final SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(converter());
-        factory.setMaxConcurrentConsumers(5);
+        factory.setMaxConcurrentConsumers(RABBITMQ_MAX_CONSUMERS.value());
         factory.setAdviceChain(retriesSetting());
         return factory;
     }
@@ -146,7 +137,7 @@ public class RabbitConfig {
     }
 
     private void declareAll(final RabbitAdmin admin) {
-        asList(queueDirect(), queueFanout(), fanoutDLQ(), dlq())
+        asList(queueDirect(), queueFanout(), fanoutDlq(), directDlq())
                 .forEach(admin::declareQueue);
         asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange(), deadLetterExchange())
                 .forEach(admin::declareExchange);

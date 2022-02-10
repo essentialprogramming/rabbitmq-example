@@ -3,6 +3,7 @@ package com.rabbitmq.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,70 +12,80 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-    public static final String DIRECT_QUEUE = "spring.boot.directQueue";
-    public static final String DIRECT_DLQ = "directDeadLetterQueue";
-    public static final String FANOUT_QUEUE = "fanoutQueue";
-    public static final String FANOUT_DLQ = "fanoutDeadLetterQueue";
-    public static final String EXCHANGE_DIRECT = "exchangeDirect";
-    public static final String EXCHANGE_FANOUT = "exchangeFanout";
-    public static final String EXCHANGE_FANOUT_DEAD_LETTER = "exchangeFanoutDeadLetter";
-    public static final String EXCHANGE_DIRECT_DEAD_LETTER = "exchangeDirectDeadLetter";
-    public static final String DLQ_ROUTING_KEY = "deadLetterKey";
-    public static final String DIRECT_ROUTING = "SPRINGBOOT_RABBITMQ_CONSUMER";
+    @Value("${app.rabbitmq.exchange.direct}")
+    private String exchangeDirect;
+    @Value("${app.rabbitmq.exchange.fanout}")
+    private String exchangeFanout;
+    @Value("${app.rabbitmq.exchange.direct.dl}")
+    private String exchangeDirectDL;
+    @Value("${app.rabbitmq.exchange.fanout.dl}")
+    private String exchangeFanoutDL;
+    @Value("${app.rabbitmq.direct.queue}")
+    private String directQueue;
+    @Value("${app.rabbitmq.direct.queue.dl}")
+    private String directDLQ;
+    @Value("${app.rabbitmq.fanout.queue}")
+    private String fanoutQueue;
+    @Value("${app.rabbitmq.fanout.queue.dl}")
+    private String fanoutDLQ;
+    @Value("${app.rabbitmq.direct.routingKey}")
+    private String routingKey;
+    @Value("${app.rabbitmq.direct.routingKey.dl}")
+    private String routingKeyDL;
 
     @Bean
-    Queue queueA(){
-        return QueueBuilder.durable(DIRECT_QUEUE)
-                .withArgument("x-dead-letter-exchange", EXCHANGE_DIRECT_DEAD_LETTER)
-                .withArgument("x-dead-letter-routing-key", DLQ_ROUTING_KEY)
+    Queue queueDirect() {
+        return QueueBuilder.durable(directQueue)
+                .withArgument("x-dead-letter-exchange", exchangeDirectDL)
+                .withArgument("x-dead-letter-routing-key", routingKeyDL)
                 .build();
     }
 
     @Bean
-    Queue dlq() {
-        return QueueBuilder.durable(DIRECT_DLQ).build();
+    Queue directDLQ() {
+        return QueueBuilder.durable(directDLQ).build();
     }
 
     @Bean
     Queue queueFanout() {
-        return QueueBuilder.durable(FANOUT_QUEUE)
-                .withArgument("x-dead-letter-exchange", EXCHANGE_FANOUT_DEAD_LETTER)
+        return QueueBuilder.durable(fanoutQueue)
+                .withArgument("x-dead-letter-exchange", exchangeFanoutDL)
                 .build();
     }
 
     @Bean
     Queue fanoutDLQ() {
-        return QueueBuilder.durable(FANOUT_DLQ).build();
+        return QueueBuilder.durable(fanoutDLQ).build();
     }
 
     @Bean
     DirectExchange directExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT);
+        return new DirectExchange(exchangeDirect);
     }
 
     @Bean
     DirectExchange deadLetterExchange() {
-        return new DirectExchange(EXCHANGE_DIRECT_DEAD_LETTER);
+        return new DirectExchange(exchangeDirectDL);
     }
 
     @Bean
     FanoutExchange fanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT);
+        return new FanoutExchange(exchangeFanout);
     }
 
     @Bean
     FanoutExchange deadLetterFanoutExchange() {
-        return new FanoutExchange(EXCHANGE_FANOUT_DEAD_LETTER);
+        return new FanoutExchange(exchangeFanoutDL);
     }
 
     @Bean
     Binding bindingDirect() {
-        return bind(queueA()).to(directExchange()).with(DIRECT_ROUTING);
+        return bind(queueDirect()).to(directExchange()).with(routingKey);
     }
 
     @Bean
     Binding bindingDirectDLQ() {
-        return bind(dlq()).to(deadLetterExchange()).with(DLQ_ROUTING_KEY);
+        return bind(directDLQ()).to(deadLetterExchange()).with(routingKeyDL);
     }
 
     @Bean
