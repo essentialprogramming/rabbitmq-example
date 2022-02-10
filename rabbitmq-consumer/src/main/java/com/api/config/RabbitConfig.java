@@ -7,7 +7,6 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -108,13 +107,6 @@ public class RabbitConfig {
         connectionFactory.setUsername(RABBITMQ_USERNAME.value());
         connectionFactory.setPassword(RABBITMQ_PASSWORD.value());
         return connectionFactory;
-    }
-
-    @Bean
-    public RabbitTemplate template(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(converter());
-        return rabbitTemplate;
     }
 
     @Bean
