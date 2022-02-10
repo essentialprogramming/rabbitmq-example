@@ -103,6 +103,26 @@ public enum AppResources {
         public String value() {
             return Environment.getProperty("RABBITMQ_DIRECT_ROUTING_KEY_DL", configuration.getPropertyAsString("app.rabbitmq.direct.routingKey.dl"));
         }
+    },
+    RABBITMQ_HOST {
+        public String value() {
+            return Environment.getProperty("RABBITMQ_HOST", configuration.getPropertyAsString("app.rabbitmq.host"));
+        }
+    },
+    RABBITMQ_USERNAME {
+        public String value() {
+            return Environment.getProperty("RABBITMQ_USERNAME", configuration.getPropertyAsString("app.rabbitmq.username"));
+        }
+    },
+    RABBITMQ_PASSWORD {
+        public String value() {
+            return Environment.getProperty("RABBITMQ_PASSWORD", configuration.getPropertyAsString("app.rabbitmq.password"));
+        }
+    },
+    RABBITMQ_MAX_CONSUMERS {
+        public String value() {
+            return Environment.getProperty("RABBITMQ_MAX_CONSUMERS", configuration.getPropertyAsString("app.rabbitmq.max.consumers"));
+        }
     };
     private static final com.util.cloud.Configuration configuration = ConfigurationManager.getConfiguration();
 

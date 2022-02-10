@@ -52,9 +52,9 @@ public class RabbitConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(RABBITMQ_HOST.value().toString());
+        connectionFactory.setUsername(RABBITMQ_USERNAME.value());
+        connectionFactory.setPassword(RABBITMQ_PASSWORD.value());
         return connectionFactory;
     }
 
