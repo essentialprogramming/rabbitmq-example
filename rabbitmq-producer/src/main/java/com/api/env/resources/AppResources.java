@@ -90,8 +90,8 @@ public enum AppResources {
         }
     },
     RABBITMQ_MAX_CONSUMERS {
-        public String value() {
-            return Environment.getProperty("RABBITMQ_MAX_CONSUMERS", configuration.getPropertyAsString("app.rabbitmq.max.consumers"));
+        public Integer value() {
+            return Environment.getProperty("RABBITMQ_MAX_CONSUMERS", configuration.getPropertyAsInteger("app.rabbitmq.max.consumers"));
         }
     };
     private static final com.util.cloud.Configuration configuration = ConfigurationManager.getConfiguration();

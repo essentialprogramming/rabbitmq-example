@@ -12,13 +12,12 @@ public class ConsumerService {
 
     private static final Logger LOG = getLogger(ConsumerService.class);
 
-    @RabbitListener(queues = {"${app.rabbitmq.direct.queue}", "${app.rabbitmq.fanout.queue}"})
+    @RabbitListener(queues = {"#{queueDirect.name}", "#{queueFanout.name}"})
     private void receiveMessage(final Message message) {
         LOG.info("Received message={}", message);
-        throw new RuntimeException("Failed");
     }
 
-    @RabbitListener(queues = "${app.rabbitmq.fanout.queue.dl}")
+    @RabbitListener(queues = "#{fanoutDlq.name}")
     private void processFailedMessages(final Message message) {
         LOG.info("Received failed message={}", message);
     }

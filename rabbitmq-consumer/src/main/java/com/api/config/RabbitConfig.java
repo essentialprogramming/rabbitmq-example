@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ import static org.springframework.amqp.core.BindingBuilder.bind;
 @Configuration
 public class RabbitConfig {
 
-
+    private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
     @Bean
     public RabbitAdmin createAdmin() {
         final RabbitAdmin admin = new RabbitAdmin(connectionFactory());
@@ -37,12 +38,12 @@ public class RabbitConfig {
     @Bean
     Queue queueFanout() {
         return QueueBuilder.durable(RABBITMQ_EXCHANGE_FANOUT.value())
-                .withArgument("x-dead-letter-exchange", RABBITMQ_EXCHANGE_FANOUT_DL)
+                .withArgument("x-dead-letter-exchange", RABBITMQ_EXCHANGE_FANOUT_DL.value())
                 .build();
     }
 
     @Bean
-    Queue fanoutDLQ() {
+    Queue fanoutDlq() {
         return QueueBuilder.durable(RABBITMQ_FANOUT_QUEUE_DL.value()).build();
     }
 
@@ -63,7 +64,7 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingDirect() {
-        return bind(queueDirect()).to(directExchange()).with(RABBITMQ_DIRECT_ROUTING_KEY);
+        return bind(queueDirect()).to(directExchange()).with(RABBITMQ_DIRECT_ROUTING_KEY.value().toString());
     }
 
     @Bean
@@ -73,7 +74,7 @@ public class RabbitConfig {
 
     @Bean
     Binding bindingFanoutDLQ() {
-        return bind(fanoutDLQ()).to(deadLetterFanoutExchange());
+        return bind(fanoutDlq()).to(deadLetterFanoutExchange());
     }
 
     @Bean
@@ -106,7 +107,7 @@ public class RabbitConfig {
     }
 
     private void declareAll(final RabbitAdmin admin) {
-        asList(queueDirect(), queueFanout(), fanoutDLQ())
+        asList(queueDirect(), queueFanout(), fanoutDlq())
                 .forEach(admin::declareQueue);
         asList(directExchange(), fanoutExchange(), deadLetterFanoutExchange())
                 .forEach(admin::declareExchange);
