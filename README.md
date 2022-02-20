@@ -15,7 +15,7 @@ RabbitMQ is an AMQP server. The server is freely available at https://www.rabbit
 
 There are two options for using Rabbit locally: install or use a docker container. For convenience use [Docker Compose](https://docs.docker.com/compose/) to quickly launch a
 RabbitMQ server.
-
+#### Docker compose yaml file
 ```
 services:
  rabbitmq:
@@ -32,9 +32,9 @@ running in a container.
 Prerequisites:
 ---------------
 
-* [java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [maven](https://maven.apache.org/)
-* [docker](https://www.docker.com/products/docker-desktop)
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Maven](https://maven.apache.org/)
+* [Docker](https://www.docker.com/products/docker-desktop)
 
 
 Spring AMQP Core Concepts
